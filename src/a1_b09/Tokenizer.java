@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 
 
 public class Tokenizer {
-	String text;
+	Stream<String> lines;
 	private ArrayList<Token> tkns;
 	@Override
 	public String toString() {
@@ -22,12 +24,12 @@ public class Tokenizer {
 		return buf.concat("]");
 	}
 	public Tokenizer(String file) {
-		this.text=file;
+		this.lines=Arrays.stream(file.split("\n"));
         this.tkns = new ArrayList<Token>();
 	}
 	public Tokenizer(Path fname) throws IOException {
-        String text = Files.readString(fname);
-        this.text=text;
+        Stream<String> text = Files.lines(fname);
+        this.lines=text;
         this.tkns = new ArrayList<Token>();
 	}
 	public int length() {
@@ -35,6 +37,9 @@ public class Tokenizer {
 	}
 	private void add_tkn_from_string(String token,int line) {
 		Token new_tkn = new StrToken(token,line);
+		if (((StrToken) new_tkn).s.equals("")) {
+			return;
+		}
 		
 		try {
 			int i = Integer.parseInt(token);
@@ -78,20 +83,21 @@ public class Tokenizer {
 		String buf = new String();
 		int line = 1;
 		//re-write to use line info 
-		for (char ch: this.text.toCharArray()) {
-			if (ch == ' ') {
-				this.add_tkn_from_string(buf,line);
-				buf = new String();
-			} else if (ch == '\n') {
-				this.add_tkn_from_string(buf,line);
-				this.add_nl_tkn(line);
-				buf = new String();
-				line+=1;
-			} else {
-				char[] toappend = new char[1];
-				toappend[0] = ch;
-				buf = buf.concat(new String(toappend));
+		for (String linetext: this.lines.toArray(String[]::new)) {
+			for (char ch: linetext.toCharArray()) {
+				if (ch == ' ') {
+					this.add_tkn_from_string(buf,line);
+					buf = new String();
+				} else {
+					char[] toappend = new char[1];
+					toappend[0] = ch;
+					buf = buf.concat(new String(toappend));
+				}
 			}
+			this.add_tkn_from_string(buf,line);
+			this.add_nl_tkn(line);
+			buf = new String();
+			line+=1;
 		}
 		//this.add_tkn_from_string(buf,line);
 		//this.add_nl_tkn(line);

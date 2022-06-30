@@ -15,7 +15,7 @@ public class OBJMeshReader implements MeshReader {
 			throw new WrongFileFormatException(e.getMessage());
 		}
 		tk.tokenize();
-		System.out.println(tk);
+		//System.out.println(tk);
 		//looking for vertices,1=looking for faces
 		int pmode = 0;
 		ArrayList<Vertex> all_vertices = new ArrayList<Vertex>();
@@ -23,25 +23,30 @@ public class OBJMeshReader implements MeshReader {
 		while (tk.length() > 0) {
 			StrToken st = new StrToken("");
 			tk.expect(st);
-			System.out.println(st);
 			if (st.s.equals("f")) {
-				System.out.println("changed mode on line "+st.line());
 				pmode = 1;
 			} else if (st.s == "v" && pmode == 1) {
 				throw new WrongFileFormatException("Attempt to add vertex after vertex declaration section on line "+st.line());
 			}
 			if (pmode == 0) {
-				System.out.println("Parsing in vector mode");
-				DoubleToken x = new DoubleToken(0);
-				DoubleToken y = new DoubleToken(0);
-				DoubleToken z = new DoubleToken(0);
-				tk.expect(x);
-				tk.expect(y);
-				tk.expect(z);
+				Token x = tk.pop();
+				Token y = tk.pop();
+				Token z = tk.pop();
+				Token[] coords = {x,y,z};
+				double[] vcoords = new double[3];
+				for (int i = 0; i < 3;i++) {
+					Token c = coords[i];
+					if (!(c instanceof IntToken || c instanceof DoubleToken)) {
+						throw new WrongFileFormatException("Error encountered on line "+c.line()+ "expecting IntToken or DoubleToken, found " + c);
+					} else if (c instanceof IntToken) {
+						vcoords[i] = Double.valueOf((int) c.getValue());
+					} else {
+						vcoords[i] = (double) c.getValue();
+					}
+				}
 				tk.expect(new NlToken());
-				all_vertices.add(new Vertex((double) x.getValue(),(double) y.getValue(),(double) z.getValue()));
+				all_vertices.add(new Vertex(vcoords[0],vcoords[1],vcoords[2]));
 			} else if (pmode == 1) {
-				System.out.println("Parsing in face mode");
 				Token ast = tk.pop();
 				LinkedHashSet<Vertex> this_verts = new LinkedHashSet<Vertex>();
 				while (!(ast instanceof NlToken)) {
