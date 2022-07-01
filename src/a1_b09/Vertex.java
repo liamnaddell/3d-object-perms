@@ -1,6 +1,7 @@
 package a1_b09;
 
 import java.util.Objects;
+import java.util.Arrays;
 
 public class Vertex extends GraphicalObject {
 	double x;
@@ -34,7 +35,11 @@ public class Vertex extends GraphicalObject {
 		this.z = z;
 	}
 	void transform(double[][] arr) {
-		return;
+		//Jaskell programming KING
+		double[] new_xyz = Arrays.stream(arr).map(row->row[0]*x+row[1]*y+row[2]*z).mapToDouble(x->x).toArray();
+		this.x=new_xyz[0];
+		this.y=new_xyz[1];
+		this.z=new_xyz[2];
 	}
 
 	

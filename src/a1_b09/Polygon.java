@@ -5,9 +5,13 @@ import java.util.LinkedHashSet;
 public class Polygon extends GraphicalObject {
 	LinkedHashSet<Vertex> vertices;
 
-	public Polygon(LinkedHashSet<Vertex> vertices) {
+	public Polygon(LinkedHashSet<Vertex> vs) {
 		super();
-		this.vertices = vertices;
+		this.vertices= new LinkedHashSet<Vertex>();
+		for (Vertex v : vs) {
+			Vertex nv = new Vertex(v.x,v.y,v.z);
+			this.vertices.add(nv);
+		}
 	}
 
 	@Override
@@ -21,6 +25,4 @@ public class Polygon extends GraphicalObject {
 	public String toString() {
 		return "Polygon [vertices=" + vertices + "]";
 	}
-	
-
 }
