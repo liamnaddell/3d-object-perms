@@ -35,6 +35,9 @@ public class Tokenizer {
 	public int length() {
 		return this.tkns.size();
 	}
+	public void skip(int n) throws WrongFileFormatException {
+		for (;n>0;n-=1,this.pop());
+	}
 	private void add_tkn_from_string(String token,int line) {
 		Token new_tkn = new StrToken(token,line);
 		if (((StrToken) new_tkn).s.equals("")) {
@@ -67,6 +70,16 @@ public class Tokenizer {
 			throw new WrongFileFormatException("Expecting "+tkn.getClass()+ " found "+actual+" on line "+actual.line());
 		}
 		return;
+	}
+	public Token peek_e(int i) throws WrongFileFormatException {
+		if ( this.tkns.size() == i) {
+			throw new WrongFileFormatException("Attempt to peek EOF");
+		} else {
+			return this.tkns.get(i);
+		}
+	}
+	public Boolean is_eof() {
+		return this.tkns.size() == 0;
 	}
 	public Token pop() throws WrongFileFormatException {
 		if (this.tkns.size() == 0) {
