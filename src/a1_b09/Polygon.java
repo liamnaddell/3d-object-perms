@@ -45,6 +45,17 @@ public class Polygon extends GraphicalObject {
 				return false;
 			}
 		}
+		for (Vertex x : other.vertices) {
+			Boolean found = false;
+			for (Vertex y : vertices) {
+				if (x.equals(y)) {
+					found = true;
+				}
+			}
+			if (found != true) {
+				return false;
+			}
+		}
 		return true;
 		//return vertices.equals(other.vertices);
 	}

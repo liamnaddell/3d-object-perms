@@ -52,6 +52,18 @@ public class Mesh extends GraphicalObject {
 				return false;
 			}
 		}
+		for (Polygon x : other.polygons) {
+			Boolean found=false;
+			for (Polygon y : this.polygons) {
+				if (x.equals(y)) {
+					found=true;
+				}
+			}
+			if (found == false) {
+				System.out.println("in.java Polygon "+x+" has no friend");
+				return false;
+			}
+		}
 		return true;
 	}
 	@Override
