@@ -45,6 +45,7 @@ public class Mesh extends GraphicalObject {
 			for (Polygon y : other.polygons) {
 				if (x.equals(y)) {
 					found=true;
+					break;
 				}
 			}
 			if (found == false) {
@@ -57,6 +58,7 @@ public class Mesh extends GraphicalObject {
 			for (Polygon y : this.polygons) {
 				if (x.equals(y)) {
 					found=true;
+					break;
 				}
 			}
 			if (found == false) {

@@ -39,6 +39,7 @@ public class Polygon extends GraphicalObject {
 			for (Vertex y : other.vertices) {
 				if (x.equals(y)) {
 					found = true;
+					break;
 				}
 			}
 			if (found != true) {
@@ -50,6 +51,7 @@ public class Polygon extends GraphicalObject {
 			for (Vertex y : vertices) {
 				if (x.equals(y)) {
 					found = true;
+					break;
 				}
 			}
 			if (found != true) {
