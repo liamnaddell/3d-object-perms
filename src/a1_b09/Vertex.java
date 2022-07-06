@@ -1,6 +1,5 @@
 package a1_b09;
 
-import java.util.Objects;
 import java.util.Arrays;
 
 public class Vertex extends GraphicalObject {
@@ -9,7 +8,8 @@ public class Vertex extends GraphicalObject {
 	public double z;
 	@Override
 	public int hashCode() {
-		return Objects.hash(x, y, z);
+		//hacky hack hack here
+		return (int) Math.round(x*y*z*10);
 	}
 	@Override
 	public boolean equals(Object obj) {
@@ -28,21 +28,18 @@ public class Vertex extends GraphicalObject {
 		Boolean ye=false;
 		Boolean ze=false;
 		if (Math.abs(x-other.x) < eps) {
-			System.out.println("xeq");
 			xe=true;
 		}
 		if (Math.abs(y-other.y) < eps) {
-			System.out.println("yeq");
 			ye=true;
 		} 
 		if (Math.abs(z-other.z) < eps) {
-			System.out.println("zeq");
 			ze=true;
 		} 
 
 		if (xe && ye && ze) {
-			System.out.print("x:"+x+"y:"+y+"z:"+z+"=");
-			System.out.println("x:"+other.x+"y:"+other.y+"z:"+other.z);
+			//System.out.print("x:"+x+"y:"+y+"z:"+z+"=");
+			//System.out.println("x:"+other.x+"y:"+other.y+"z:"+other.z);
 			return true;
 		} else {
 			return false;

@@ -2,7 +2,7 @@ package a1_b09;
 
 import java.util.Objects;
 
-class DoubleToken extends Token {
+public class DoubleToken extends Token {
 	public double s;
 	public int line;
 
@@ -41,8 +41,6 @@ class DoubleToken extends Token {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
 		if (obj == null)
 			return false;
 		if (getClass() != obj.getClass())

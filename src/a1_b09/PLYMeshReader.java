@@ -45,16 +45,17 @@ public class PLYMeshReader implements MeshReader {
 		for (;mode<1;) {
 			Token[] xyz_t = {tk.pop(),tk.pop(),tk.pop()};
 
-			double[] xyz = Arrays.stream(xyz_t).mapToDouble(c -> {
+			double[] xyz = new double[3];
+			for (int i=0; i<3;i++) {
+				Token c = xyz_t[i];
 				if (c instanceof IntToken) {
-					return (double) (int) c.getValue();
+					xyz[i]=(double) (int) c.getValue();
 				} else if (c instanceof DoubleToken) {
-					return (double) c.getValue();
+					xyz[i]=(double) c.getValue();
 				} else {
-					//bug here?
-					throw new RuntimeException(new WrongFileFormatException("Expecting IntToken or DoubleToken on line "+c.line()+", found "+c));
+					throw new WrongFileFormatException("Expecting IntToken or DoubleToken on line "+c.line()+", found "+c);
 				}
-			}).toArray();
+			}
 			all_vertices.add(new Vertex(xyz[0],xyz[1],xyz[2]));
 
 			tk.expect(new NlToken());

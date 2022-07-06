@@ -53,5 +53,12 @@ class TokenizerTest {
 			fail("FAILED");
 		}
 	}
+	@Test
+	void test_tktostr() {
+		String sample_inp = "OBJ 1 2 3 \n"
+				+ "4 5.0 OFF";
+		Tokenizer tk = new Tokenizer(sample_inp);
+		assertTrue(tk+"" instanceof String);
+	}
 	
 }

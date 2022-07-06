@@ -105,6 +105,193 @@ class MeshTest {
 		bb.add(b);
 		Mesh m2 = new Mesh();
 		m2.polygons=bb;
+	}
+	
+	@Test
+	void test_off_mesh_writer_car() {
+		Mesh m = new Mesh();
+		m.setReader(new OBJMeshReader());
+		m.setWriter(new OFFMeshWriter());
+		try {
+			m.readFromFile("car.obj");
+			m.rotateXAxis(4*Math.PI);
+			m.writeToFile("./out/car.off");
+			Mesh m2 = new Mesh();
+			m2.setReader(new OFFMeshReader());
+			m2.readFromFile("out/car.off");
+			assertTrue(m.equals(m2));
+			assertEquals(m.hashCode(),m2.hashCode());
+		} catch (WrongFileFormatException e) {
+			System.out.println(e.msg);
+			fail("I failed xd");
+		}
+	}
+	@Test
+	void test_off_rgb_bad() {
+		Mesh m = new Mesh();
+		m.setReader(new OFFMeshReader());
+		m.setWriter(new OFFMeshWriter());
+		try {
+			m.readFromFile("tests/rgbad.off");
+			fail("should have thrown exception");
+		} catch (WrongFileFormatException e) {
+			assertTrue(true);
+		}
+	}
+	@Test
+	void test_off_int_in_vertex() {
+		Mesh m = new Mesh();
+		m.setReader(new OFFMeshReader());
+		m.setWriter(new OFFMeshWriter());
+		try {
+			m.readFromFile("tests/intvertex.off");
+			assertTrue(m.polygons.size() == 6);
+		} catch (WrongFileFormatException e) {
+			fail("should have thrown exception");
+		}
+	}
+	@Test
+	void test_off_strvertex() {
+		Mesh m = new Mesh();
+		m.setReader(new OFFMeshReader());
+		m.setWriter(new OFFMeshWriter());
+		try {
+			m.readFromFile("tests/strvertex.off");
+			fail("should have thrown exception");
+		} catch (WrongFileFormatException e) {
+			assertTrue(true);
+		}
+	}
+	@Test
+	void test_ply_strvertex() {
+		Mesh m = new Mesh();
+		m.setReader(new PLYMeshReader());
+		m.setWriter(new OFFMeshWriter());
+		try {
+			m.readFromFile("tests/strvertex.ply");
+			fail("should have thrown exception");
+		} catch (WrongFileFormatException e) {
+			assertTrue(true);
+		}
+	}
+	@Test
+	void test_ply_badvertindex() {
+		Mesh m = new Mesh();
+		m.setReader(new PLYMeshReader());
+		m.setWriter(new OFFMeshWriter());
+		try {
+			m.readFromFile("tests/badvindex.ply");
+			fail("should have thrown exception");
+		} catch (WrongFileFormatException e) {
+			assertTrue(true);
+		}
+	}
+	@Test
+	void test_ply_badfaceno() {
+		Mesh m = new Mesh();
+		m.setReader(new PLYMeshReader());
+		m.setWriter(new OFFMeshWriter());
+		try {
+			m.readFromFile("tests/badfaceno.ply");
+			fail("should have thrown exception");
+		} catch (WrongFileFormatException e) {
+			assertTrue(true);
+		}
+	}
+	@Test
+	void test_ply_badvertno() {
+		Mesh m = new Mesh();
+		m.setReader(new PLYMeshReader());
+		m.setWriter(new OFFMeshWriter());
+		try {
+			m.readFromFile("tests/badvertno.ply");
+			fail("should have thrown exception");
+		} catch (WrongFileFormatException e) {
+			assertTrue(true);
+		}
+	}
+	@Test
+	void test_no_file() {
+		Mesh m = new Mesh();
+		try {
+			m.setReader(new OBJMeshReader());
+			m.readFromFile("IDONTEXIST");
+		} catch (WrongFileFormatException e) {
+			assertTrue(true);
+		}
+		try {
+			m.setReader(new OFFMeshReader());
+			m.readFromFile("IDONTEXIST");
+		} catch (WrongFileFormatException e) {
+			assertTrue(true);
+		}
+		try {
+			m.setReader(new PLYMeshReader());
+			m.readFromFile("IDONTEXIST");
+		} catch (WrongFileFormatException e) {
+			assertTrue(true);
+		}
+	}
+	@Test
+	void test_off_badvertno() {
+		Mesh m = new Mesh();
+		m.setReader(new OFFMeshReader());
+		m.setWriter(new OFFMeshWriter());
+		try {
+			m.readFromFile("tests/badvertno.off");
+			fail("should have thrown exception");
+		} catch (WrongFileFormatException e) {
+			System.out.println(e.msg);
+			assertTrue(true);
+		}
+	}
+	@Test
+	void test_off_bad_vindex() {
+		Mesh m = new Mesh();
+		m.setReader(new OFFMeshReader());
+		m.setWriter(new OFFMeshWriter());
+		try {
+			m.readFromFile("tests/badvindex.off");
+			fail("should have thrown exception");
+		} catch (WrongFileFormatException e) {
+			System.out.println(e.msg);
+			assertTrue(true);
+		}
+	}
+
+	@Test
+	void test_off_bad_faceno() {
+		Mesh m = new Mesh();
+		m.setReader(new OFFMeshReader());
+		m.setWriter(new OFFMeshWriter());
+		try {
+			m.readFromFile("tests/badfaceno.off");
+			fail("should have thrown exception");
+		} catch (WrongFileFormatException e) {
+			System.out.println(e.msg);
+			assertTrue(true);
+		}
+	}
+	@Test
+	void test_mesh_eq() {
 		
+		Mesh m = new Mesh();
+		m.setReader(new OFFMeshReader());
+		m.setWriter(new OFFMeshWriter());
+		Mesh m2 = new Mesh();
+		m2.setReader(new OFFMeshReader());
+		m2.setWriter(new OFFMeshWriter());
+
+		try {
+			m2.readFromFile("car.off");
+			m.readFromFile("tests/cube.off");
+			assertFalse(m.equals(null));
+			assertFalse(m.equals(0));
+			assertFalse(m.equals(m2));
+			assertFalse(m2.equals(m));
+		} catch (WrongFileFormatException e) {
+			System.out.println(e.msg);
+			fail("shouldn't have thrown exception");
+		}
 	}
 }
