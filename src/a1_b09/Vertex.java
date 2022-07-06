@@ -4,9 +4,9 @@ import java.util.Objects;
 import java.util.Arrays;
 
 public class Vertex extends GraphicalObject {
-	double x;
-	double y;
-	double z;
+	public double x;
+	public double y;
+	public double z;
 	@Override
 	public int hashCode() {
 		return Objects.hash(x, y, z);
@@ -20,9 +20,33 @@ public class Vertex extends GraphicalObject {
 		if (getClass() != obj.getClass())
 			return false;
 		Vertex other = (Vertex) obj;
-		return Double.doubleToLongBits(x) == Double.doubleToLongBits(other.x)
-				&& Double.doubleToLongBits(y) == Double.doubleToLongBits(other.y)
-				&& Double.doubleToLongBits(z) == Double.doubleToLongBits(other.z);
+/*		return x == other.x
+				&& y == other.y
+				&& z == other.z;*/
+		double eps = 0.0000001;
+		Boolean xe=false;
+		Boolean ye=false;
+		Boolean ze=false;
+		if (Math.abs(x-other.x) < eps) {
+			System.out.println("xeq");
+			xe=true;
+		}
+		if (Math.abs(y-other.y) < eps) {
+			System.out.println("yeq");
+			ye=true;
+		} 
+		if (Math.abs(z-other.z) < eps) {
+			System.out.println("zeq");
+			ze=true;
+		} 
+
+		if (xe && ye && ze) {
+			System.out.print("x:"+x+"y:"+y+"z:"+z+"=");
+			System.out.println("x:"+other.x+"y:"+other.y+"z:"+other.z);
+			return true;
+		} else {
+			return false;
+		}
 	}
 	@Override
 	public String toString() {
@@ -34,7 +58,7 @@ public class Vertex extends GraphicalObject {
 		this.y = y;
 		this.z = z;
 	}
-	void transform(double[][] arr) {
+	public void transform(double[][] arr) {
 		//Jaskell programming KING
 		double[] new_xyz = Arrays.stream(arr).map(row->row[0]*x+row[1]*y+row[2]*z).mapToDouble(x->x).toArray();
 		this.x=new_xyz[0];

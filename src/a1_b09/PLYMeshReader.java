@@ -8,8 +8,6 @@ import java.util.LinkedHashSet;
 import java.util.HashSet;
 
 public class PLYMeshReader implements MeshReader {
-
-	@Override
 	public HashSet<Polygon> read(String filename) throws WrongFileFormatException {
 		Tokenizer tk = null;
 		try {

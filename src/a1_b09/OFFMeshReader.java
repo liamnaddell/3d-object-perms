@@ -44,7 +44,6 @@ public class OFFMeshReader implements MeshReader {
 				} else if (c instanceof DoubleToken) {
 					return (double) c.getValue();
 				} else {
-					//bug here?
 					throw new RuntimeException(new WrongFileFormatException("Expecting IntToken or DoubleToken on line "+c.line()+", found "+c));
 				}
 			}).toArray();
@@ -72,7 +71,7 @@ public class OFFMeshReader implements MeshReader {
 			}
 			polys.add(new Polygon(face));
 
-			Token maybe_r_or_nl_t = tk.peek_e(1);
+			Token maybe_r_or_nl_t = tk.peek_e(0);
 			if (maybe_r_or_nl_t instanceof NlToken) {
 				tk.skip(1);
 			} else if (maybe_r_or_nl_t instanceof IntToken) {

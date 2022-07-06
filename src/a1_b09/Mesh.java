@@ -1,12 +1,13 @@
 package a1_b09;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class Mesh extends GraphicalObject {
-	HashSet<Polygon> polygons;
+	public HashSet<Polygon> polygons;
 	MeshReader reader;
 	MeshWriter writer;
 	public void setReader(MeshReader reader) {
@@ -15,26 +16,43 @@ public class Mesh extends GraphicalObject {
 	public void setWriter(MeshWriter writer) {
 		this.writer=writer;
 	}
-	void readFromFile(String file) throws WrongFileFormatException {
+	public void readFromFile(String file) throws WrongFileFormatException {
 		HashSet<Polygon> polygons = this.reader.read(file);
 		this.polygons=polygons;
 	}
-	void writeToFile(String file) {
+	public void writeToFile(String file) {
 		this.writer.write(file,this.polygons);
 	}
-	void transform(double[][] arr) {
-		//stackoverflow go brr haha
-		/*System.out.println(Arrays.stream(arr)
-        .map(s -> Arrays.stream(s)
-                        .mapToObj(String::valueOf)
-                        .collect(Collectors.joining(" "))
-        )
-        .collect(Collectors.joining("\n")));*/
+	public void transform(double[][] arr) {
 		for (Polygon p : this.polygons) {
-			//System.out.print("Transforming "+p);
 			p.transform(arr);
-			//System.out.println(" to "+p);
 		}
+	}
+	@Override
+	public int hashCode() {
+		return Objects.hash(polygons);
+	}
+	//compare readers and writers
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Mesh other = (Mesh) obj;
+		for (Polygon x : this.polygons) {
+			Boolean found=false;
+			for (Polygon y : other.polygons) {
+				if (x.equals(y)) {
+					found=true;
+				}
+			}
+			if (found == false) {
+				System.out.println("in.java Polygon "+x+" has no friend");
+				return false;
+			}
+		}
+		return true;
 	}
 	@Override
 	public String toString() {

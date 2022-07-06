@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 
 public class Tokenizer {
-	Stream<String> lines;
+	public Stream<String> lines;
 	private ArrayList<Token> tkns;
 	@Override
 	public String toString() {
@@ -61,6 +61,9 @@ public class Tokenizer {
 		this.tkns.add(new_tkn);
 	}
 	public void expect(Token tkn) throws WrongFileFormatException {
+		if (tkn == null) {
+			throw new WrongFileFormatException("Don't be stupid");
+		}
 		Token actual = this.pop();
 		if (actual.getClass() == tkn.getClass()) {
 			tkn.setValue(actual.getValue());

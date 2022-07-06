@@ -8,9 +8,13 @@ import java.io.IOException;
 
 public class OBJMeshReader implements MeshReader {
 	public HashSet<Polygon> read(String file) throws WrongFileFormatException {
+		/*
+		 * Preliminary obj validation by regex
+		 * Check line-by-line that it looks correct
+		 */
 		Tokenizer tk = null;
 		try {
-		tk = new Tokenizer(Paths.get(file));
+			tk = new Tokenizer(Paths.get(file));
 		} catch (IOException e) {
 			throw new WrongFileFormatException(e.getMessage());
 		}
@@ -23,11 +27,10 @@ public class OBJMeshReader implements MeshReader {
 		while (tk.length() > 0) {
 			StrToken st = new StrToken("");
 			tk.expect(st);
+		    //if (st.s == "f") {
 			if (st.s.equals("f")) {
 				pmode = 1;
-			} else if (st.s == "v" && pmode == 1) {
-				throw new WrongFileFormatException("Attempt to add vertex after vertex declaration section on line "+st.line());
-			}
+			} 
 			if (pmode == 0) {
 				Token x = tk.pop();
 				Token y = tk.pop();
@@ -37,7 +40,7 @@ public class OBJMeshReader implements MeshReader {
 				for (int i = 0; i < 3;i++) {
 					Token c = coords[i];
 					if (!(c instanceof IntToken || c instanceof DoubleToken)) {
-						throw new WrongFileFormatException("Error encountered on line "+c.line()+ "expecting IntToken or DoubleToken, found " + c);
+						throw new WrongFileFormatException("Error encountered on line "+c.line()+ " expecting IntToken or DoubleToken, found " + c);
 					} else if (c instanceof IntToken) {
 						vcoords[i] = Double.valueOf((int) c.getValue());
 					} else {
