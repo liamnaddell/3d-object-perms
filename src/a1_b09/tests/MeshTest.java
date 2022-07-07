@@ -46,12 +46,16 @@ class MeshTest {
 			Mesh m2 = new Mesh();
 			m2.setReader(new OBJMeshReader());
 			m2.readFromFile("out/triangle.obj");
+			
+			Mesh m3 = new Mesh();
+			m3.setReader(new PLYMeshReader());
+			m3.readFromFile("tests/triangle.ply");
 
-			System.out.println(m);
 			System.out.println(m2);
+			System.out.println(m3);
 			//assertEquals(m.hashCode(),m2.hashCode());
 			
-			assertEquals(m,m2);
+			assertEquals(m2,m3);
 		} catch (WrongFileFormatException e) {
 			fail(e.msg+"");
 		}

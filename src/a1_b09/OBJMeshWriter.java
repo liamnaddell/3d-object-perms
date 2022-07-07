@@ -22,10 +22,11 @@ public class OBJMeshWriter implements MeshWriter {
 				fs.add(face);
 			}
 			for (Vertex v : vs) {
+				double eps = 1000000.0;
 				file.write("v ");
-				file.write(v.x+" ");
-				file.write(v.y+" ");
-				file.write(v.z+"\n");
+				file.write(Math.rint(v.x*eps)/eps+" ");
+				file.write(Math.rint(v.y*eps)/eps+" ");
+				file.write(Math.rint(v.z*eps)/eps+"\n");
 			}
 			for (ArrayList<Integer> face : fs ) {
 				file.write("f ");

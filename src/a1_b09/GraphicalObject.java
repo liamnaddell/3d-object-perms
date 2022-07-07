@@ -8,7 +8,9 @@ public abstract class GraphicalObject {
 		 * [ 0 cos(th) -sin(th) ]
 		 * [ 0 sin(th) cos(th) ]
 		 */
-		double[][] arr = {{1.0,0.0,0.0},{0.0,Math.cos(th),-Math.sin(th)},{0.0,Math.sin(th),Math.cos(th)}};
+		double[][] arr = {{1.0,0.0,0.0},
+				{0.0,Math.cos(th),-Math.sin(th)},
+				{0.0,Math.sin(th),Math.cos(th)}};
 		this.transform(arr);
 		
 	}
@@ -19,7 +21,9 @@ public abstract class GraphicalObject {
 		 * [ -sin th 0 cos th ] 
 		 */
 		//wrong
-		double[][] arr = {{Math.cos(th),0.0,Math.sin(th)},{0.0,1.0,0.0},{-Math.sin(th),0.0,Math.cos(th)}};
+		double[][] arr = {{Math.cos(th),0.0,Math.sin(th)},
+				{0.0,1.0,0.0},
+				{-Math.sin(th),0.0,Math.cos(th)}};
 		this.transform(arr);
 	}
 	public void rotateZAxis(double th) {
@@ -28,7 +32,9 @@ public abstract class GraphicalObject {
 		 * [ sin th cos th 0 ]
 		 * [0 0 1 ]
 		 */
-		double[][] arr = {{Math.cos(th),-Math.sin(th),0.0},{Math.sin(th),Math.cos(th),0.0},{0.0,0.0,1.0}};
+		double[][] arr = {{Math.cos(th),-Math.sin(th),0.0},
+				{Math.sin(th),Math.cos(th),0.0},
+				{0.0,0.0,1.0}};
 		this.transform(arr);
 	}
 }

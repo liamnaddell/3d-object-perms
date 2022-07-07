@@ -28,9 +28,10 @@ public class OFFMeshWriter implements MeshWriter {
 			file.write(fs.size()+" ");
 			file.write("0\n");
 			for (Vertex v : vs) {
-				file.write(v.x+" ");
-				file.write(v.y+" ");
-				file.write(v.z+"\n");
+				double eps = 1000000.0;
+				file.write(Math.rint(v.x*eps)/eps+" ");
+				file.write(Math.rint(v.y*eps)/eps+" ");
+				file.write(Math.rint(v.z*eps)/eps+"\n");
 			}
 			for (ArrayList<Integer> face : fs) {
 				file.write(face.size()+" ");
