@@ -3,7 +3,6 @@ package a1_b09;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 
@@ -49,7 +48,11 @@ public class OFFMeshReader implements MeshReader {
 					throw new WrongFileFormatException("Expecting IntToken or DoubleToken on line "+c.line()+", found "+c);
 				}
 			}
+			int bsize = all_vertices.size();
 			all_vertices.add(new Vertex(xyz[0],xyz[1],xyz[2]));
+			if (bsize == all_vertices.size()) {
+				System.out.println("Found duplicate: "+xyz[0]+","+xyz[1]+","+xyz[2]);
+			}
 
 			tk.expect(new NlToken());
 			Token peeked = tk.peek_e(0);
@@ -71,19 +74,26 @@ public class OFFMeshReader implements MeshReader {
 					throw new WrongFileFormatException("Error encountered on line "+vert_no_t.line()+": Attempt to form polygon with vertex "+vert_no+" vertex does not exist");
 				}
 			}
-			polys.add(new Polygon(face));
+			int bsize = polys.size();
+			Polygon p = new Polygon(face);
+			polys.add(p);
+			if (bsize == polys.size()) {
+				System.out.println("offmeshreader: duplicate face detected: "+p);
+				num_face-=1;
+			}
 
 			Token maybe_r_or_nl_t = tk.peek_e(0);
 			if (maybe_r_or_nl_t instanceof NlToken) {
-				tk.skip(1);
+				tk.skip(0);
 			} else if (maybe_r_or_nl_t instanceof IntToken) {
-				tk.skip(4);
+				tk.skip(3);
 			} else {
 				throw new WrongFileFormatException("Error encountered on line "+maybe_r_or_nl_t.line()+", expecting NlToken or IntToken, found "+maybe_r_or_nl_t);
 			}
+			tk.expect(new NlToken());
 			if (tk.is_eof()) mode=2;
 		}
-		if (polys.size()!=num_face) throw new WrongFileFormatException("Expected "+num_face+ " vertices, found "+ polys.size());
+		if (polys.size()!=num_face) throw new WrongFileFormatException("Expected "+num_face+ " faces, found "+ polys.size());
 		return polys;
 	}
 }

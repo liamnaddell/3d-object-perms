@@ -107,25 +107,7 @@ class MeshTest {
 		m2.polygons=bb;
 	}
 	
-	@Test
-	void test_off_mesh_writer_car() {
-		Mesh m = new Mesh();
-		m.setReader(new OBJMeshReader());
-		m.setWriter(new OFFMeshWriter());
-		try {
-			m.readFromFile("car.obj");
-			m.rotateXAxis(4*Math.PI);
-			m.writeToFile("./out/car.off");
-			Mesh m2 = new Mesh();
-			m2.setReader(new OFFMeshReader());
-			m2.readFromFile("out/car.off");
-			assertTrue(m.equals(m2));
-			assertEquals(m.hashCode(),m2.hashCode());
-		} catch (WrongFileFormatException e) {
-			System.out.println(e.msg);
-			fail("I failed xd");
-		}
-	}
+
 	@Test
 	void test_off_rgb_bad() {
 		Mesh m = new Mesh();
@@ -279,12 +261,12 @@ class MeshTest {
 		m.setReader(new OFFMeshReader());
 		m.setWriter(new OFFMeshWriter());
 		Mesh m2 = new Mesh();
-		m2.setReader(new OFFMeshReader());
+		m2.setReader(new PLYMeshReader());
 		m2.setWriter(new OFFMeshWriter());
 
 		try {
-			m2.readFromFile("car.off");
 			m.readFromFile("tests/cube.off");
+			m2.readFromFile("car.ply");
 			assertFalse(m.equals(null));
 			assertFalse(m.equals(0));
 			assertFalse(m.equals(m2));

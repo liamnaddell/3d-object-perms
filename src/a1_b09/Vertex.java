@@ -20,30 +20,9 @@ public class Vertex extends GraphicalObject {
 		if (getClass() != obj.getClass())
 			return false;
 		Vertex other = (Vertex) obj;
-/*		return x == other.x
+		return x == other.x
 				&& y == other.y
-				&& z == other.z;*/
-		double eps = 0.0000001;
-		Boolean xe=false;
-		Boolean ye=false;
-		Boolean ze=false;
-		if (Math.abs(x-other.x) < eps) {
-			xe=true;
-		}
-		if (Math.abs(y-other.y) < eps) {
-			ye=true;
-		} 
-		if (Math.abs(z-other.z) < eps) {
-			ze=true;
-		} 
-
-		if (xe && ye && ze) {
-			//System.out.print("x:"+x+"y:"+y+"z:"+z+"=");
-			//System.out.println("x:"+other.x+"y:"+other.y+"z:"+other.z);
-			return true;
-		} else {
-			return false;
-		}
+				&& z == other.z;
 	}
 	@Override
 	public String toString() {

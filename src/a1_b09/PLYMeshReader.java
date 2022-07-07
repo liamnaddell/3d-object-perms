@@ -3,7 +3,6 @@ package a1_b09;
 import java.nio.file.Paths;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.HashSet;
 
@@ -78,7 +77,13 @@ public class PLYMeshReader implements MeshReader {
 					throw new WrongFileFormatException("Error encountered on line "+vert_no_t.line()+": Attempt to form polygon with vertex "+vert_no+" vertex does not exist");
 				}
 			}
-			polys.add(new Polygon(face));
+			Polygon p = new Polygon(face);
+			int bsize=polys.size();
+			polys.add(p);
+			if (polys.size() == bsize) {
+				System.out.println("duplicate node p: "+p);
+				num_face-=1;
+			}
 			tk.expect(new NlToken());
 			if (tk.is_eof()) mode=2;
 		}
