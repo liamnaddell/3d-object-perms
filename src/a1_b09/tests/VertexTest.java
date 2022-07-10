@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import a1_b09.Vertex;
 
 class VertexTest {
-
 	@Test
 	void test_v_transform() {
 		Vertex v = new Vertex(1.5,2.5,3.5);
@@ -23,5 +22,19 @@ class VertexTest {
 		Vertex b = new Vertex(1.5,2.5,3.5);
 		assertEquals(v.hashCode(),b.hashCode());
 		assertEquals(v,b);
+	}
+	@Test
+	void test_equal2s() {
+		Vertex v = new Vertex(0.0005,2.5,3.5);
+		Vertex b = new Vertex(0.00005,2.5,3.5);
+		assertFalse(v.hashCode() == b.hashCode());
+		assertFalse(v.equals(b));
+	}
+	@Test
+	void test_equals3() {
+		Vertex v = new Vertex(2.0,2.0,2.0);
+		Vertex b = new Vertex(2.0,2.0,2.0);
+		assertTrue(v.hashCode() == b.hashCode());
+		assertTrue(v.equals(b));
 	}
 }

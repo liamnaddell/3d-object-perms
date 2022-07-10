@@ -4,6 +4,7 @@ import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.regex.Pattern;
 import java.io.IOException;
 
 public class OBJMeshReader implements MeshReader {
@@ -19,6 +20,32 @@ public class OBJMeshReader implements MeshReader {
 			throw new WrongFileFormatException(e.getMessage());
 		}
 		tk.tokenize();
+		Pattern vecp = Pattern.compile("v -?(\\d*(\\.\\d*)?) -?(\\d*(\\.\\d*)?) -?(\\d*(\\.\\d*)?) *");
+		Pattern facep = Pattern.compile("f (\\d* )+\\d* *");
+		int i = 0;
+		int lmode = 0;
+		for (String s : tk.lines) {
+			Boolean matches_vec = vecp.matcher(s).matches();
+			Boolean matches_face = facep.matcher(s).matches();
+			if (lmode == 0 ) {
+				if (matches_vec) {
+					//fine
+				} else if (matches_face) {
+					lmode=1;
+				} else if (!matches_vec) {
+					throw new WrongFileFormatException("Error on line "+(i+1)+" expecting vector");
+				}
+			} else if (lmode == 1) {
+				if (matches_face) {
+					//fine
+				} else if (matches_vec) {
+					throw new WrongFileFormatException("Error on line "+(i+1)+" found vector in face section");
+				} else if (!matches_face) {
+					throw new WrongFileFormatException("Bad face on line "+(i+1));
+				}
+			}
+			i++;
+		}
 		//System.out.println(tk);
 		//looking for vertices,1=looking for faces
 		int pmode = 0;
@@ -37,7 +64,7 @@ public class OBJMeshReader implements MeshReader {
 				Token z = tk.pop();
 				Token[] coords = {x,y,z};
 				double[] vcoords = new double[3];
-				for (int i = 0; i < 3;i++) {
+				for (i = 0; i < 3;i++) {
 					Token c = coords[i];
 					if (!(c instanceof IntToken || c instanceof DoubleToken)) {
 						throw new WrongFileFormatException("Error encountered on line "+c.line()+ " expecting IntToken or DoubleToken, found " + c);
@@ -67,7 +94,12 @@ public class OBJMeshReader implements MeshReader {
 					}
 					ast = tk.pop();
 				}
-				all_gons.add(new Polygon(this_verts));
+				int bsize = all_gons.size();
+				Polygon p = new Polygon(this_verts);
+				all_gons.add(p);
+				if (bsize == all_gons.size()) {
+					System.out.println("objmeshreader: duplicate face detected: "+p);
+				}
 			}
 		}
 		return all_gons;

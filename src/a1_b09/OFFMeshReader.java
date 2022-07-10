@@ -5,6 +5,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.regex.Pattern;
 
 public class OFFMeshReader implements MeshReader {
 	public HashSet<Polygon> read(String file_path) throws WrongFileFormatException {
@@ -15,7 +16,41 @@ public class OFFMeshReader implements MeshReader {
 			throw new WrongFileFormatException("Must input a valid file path");
 		}
 		tk.tokenize();
+
+		Pattern headp = Pattern.compile("OFF\n\\d* \\d* \\d*");
+		String header = tk.lines[0]+"\n"+tk.lines[1];
+		if (!(headp.matcher(header).matches())) {
+			throw new WrongFileFormatException("Broken header");
+		}
+		Pattern vecp = Pattern.compile("-?(\\d*(\\.\\d*)?) -?(\\d*(\\.\\d*)?) -?(\\d*(\\.\\d*)?) *");
+		Pattern facep = Pattern.compile("(\\d* )+\\d* *");
 		//skipping through header
+		int i = 0;
+		int lmode = 0;
+		for (String s : tk.lines) {
+			if (! (i < 2)) {
+				Boolean matches_vec = vecp.matcher(s).matches();
+				Boolean matches_face = facep.matcher(s).matches();
+				if (lmode == 0 ) {
+					if (matches_vec) {
+						//fine
+					} else if (matches_face) {
+						lmode=1;
+					} else if (!matches_vec) {
+						throw new WrongFileFormatException("OFFMR: Error on line "+(i+1)+" expecting vector");
+					}
+				} else if (lmode == 1) {
+					if (matches_face) {
+						//fine
+					} else if (matches_vec) {
+						throw new WrongFileFormatException("OFFMR: Error on line "+(i+1)+" found vector in face section");
+					} else if (!matches_face) {
+						throw new WrongFileFormatException("OFFMR: Bad face on line "+(i+1));
+					}
+				}
+			}
+			i++;
+		}
 		/* 
 		 * OFF
 		 * <vert> <face> 0
@@ -38,47 +73,47 @@ public class OFFMeshReader implements MeshReader {
 			Token[] xyz_t = {tk.pop(),tk.pop(),tk.pop()};
 
 			double[] xyz = new double[3];
-			for (int i=0; i<3;i++) {
+			for (i=0; i<3;i++) {
 				Token c = xyz_t[i];
 				if (c instanceof IntToken) {
 					xyz[i]=(double) (int) c.getValue();
 				} else if (c instanceof DoubleToken) {
 					xyz[i]=(double) c.getValue();
 				} else {
-					throw new WrongFileFormatException("Expecting IntToken or DoubleToken on line "+c.line()+", found "+c);
+					throw new WrongFileFormatException("OFFMR: Expecting IntToken or DoubleToken on line "+c.line()+", found "+c);
 				}
 			}
 			int bsize = all_vertices.size();
 			all_vertices.add(new Vertex(xyz[0],xyz[1],xyz[2]));
 			if (bsize == all_vertices.size()) {
-				System.out.println("Found duplicate: "+xyz[0]+","+xyz[1]+","+xyz[2]);
+				System.out.println("OFFMR: Found duplicate face: "+xyz[0]+","+xyz[1]+","+xyz[2]);
 			}
 
 			tk.expect(new NlToken());
 			Token peeked = tk.peek_e(0);
 			if (peeked instanceof IntToken && (int) peeked.getValue() != 0) mode=1;
 		}
-		if (all_vertices.size()!=num_vertex) throw new WrongFileFormatException("Expected "+num_vertex+ " vertices, found "+ all_vertices.size());
+		if (all_vertices.size()!=num_vertex) throw new WrongFileFormatException("OFFMR: Expected "+num_vertex+ " vertices, found "+ all_vertices.size());
 		for (;mode<2;) {
 			IntToken num_nodes_t = new IntToken(0);
 			tk.expect(num_nodes_t);
 			int n = (int) num_nodes_t.getValue();
 			LinkedHashSet<Vertex> face = new LinkedHashSet<Vertex>();
-			for (int i=0; i < n; i+=1) {
+			for (i=0; i < n; i+=1) {
 				IntToken vert_no_t = new IntToken(0);
 				tk.expect(vert_no_t);
 				int vert_no = (int) vert_no_t.getValue();
 				if (vert_no < all_vertices.size()) {
 					face.add(all_vertices.get(vert_no));
 				} else {
-					throw new WrongFileFormatException("Error encountered on line "+vert_no_t.line()+": Attempt to form polygon with vertex "+vert_no+" vertex does not exist");
+					throw new WrongFileFormatException("OFFMR: Error encountered on line "+vert_no_t.line()+": Attempt to form polygon with vertex "+vert_no+" vertex does not exist");
 				}
 			}
 			int bsize = polys.size();
 			Polygon p = new Polygon(face);
 			polys.add(p);
 			if (bsize == polys.size()) {
-				System.out.println("offmeshreader: duplicate face detected: "+p);
+				System.out.println("offmeshreader: duplicate face detected: "+p+" "+polys.contains(p));
 				num_face-=1;
 			}
 
@@ -88,12 +123,12 @@ public class OFFMeshReader implements MeshReader {
 			} else if (maybe_r_or_nl_t instanceof IntToken) {
 				tk.skip(3);
 			} else {
-				throw new WrongFileFormatException("Error encountered on line "+maybe_r_or_nl_t.line()+", expecting NlToken or IntToken, found "+maybe_r_or_nl_t);
+				throw new WrongFileFormatException("OFFMR: Error encountered on line "+maybe_r_or_nl_t.line()+", expecting NlToken or IntToken, found "+maybe_r_or_nl_t);
 			}
 			tk.expect(new NlToken());
 			if (tk.is_eof()) mode=2;
 		}
-		if (polys.size()!=num_face) throw new WrongFileFormatException("Expected "+num_face+ " faces, found "+ polys.size());
+		if (polys.size()!=num_face) throw new WrongFileFormatException("OFFMR: Expected "+num_face+ " faces, found "+ polys.size());
 		return polys;
 	}
 }

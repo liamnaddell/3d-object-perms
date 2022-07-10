@@ -4,13 +4,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.stream.Stream;
 
 
 
 public class Tokenizer {
-	public Stream<String> lines;
+	public String[] lines;
 	private ArrayList<Token> tkns;
 	@Override
 	public String toString() {
@@ -24,13 +23,15 @@ public class Tokenizer {
 		return buf.concat("]");
 	}
 	public Tokenizer(String file) {
-		this.lines=Arrays.stream(file.split("\n"));
+//		this.lines=Arrays.stream(file.split("\n")).toArray(String[]::new);
+		this.lines=file.split("\n");
         this.tkns = new ArrayList<Token>();
 	}
 	public Tokenizer(Path fname) throws IOException {
         Stream<String> text = Files.lines(fname);
-        this.lines=text;
+        this.lines=text.toArray(String[]::new);
         this.tkns = new ArrayList<Token>();
+        text.close();
 	}
 	public int length() {
 		return this.tkns.size();
@@ -99,7 +100,7 @@ public class Tokenizer {
 		String buf = new String();
 		int line = 1;
 		//re-write to use line info 
-		for (String linetext: this.lines.toArray(String[]::new)) {
+		for (String linetext: this.lines) {
 			for (char ch: linetext.toCharArray()) {
 				if (ch == ' ') {
 					this.add_tkn_from_string(buf,line);

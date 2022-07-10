@@ -4,6 +4,7 @@ import java.nio.file.Paths;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.regex.Pattern;
 import java.util.HashSet;
 
 public class PLYMeshReader implements MeshReader {
@@ -27,6 +28,51 @@ public class PLYMeshReader implements MeshReader {
 		 * property list uint8 int32 vertex_indices
 		 * end_header
 		 */
+		Pattern headp[] = {
+				Pattern.compile("ply"),
+				Pattern.compile("format ascii 1.0"),
+				Pattern.compile("element vertex \\d+"),
+				Pattern.compile("property float32 x"),
+				Pattern.compile("property float32 y"),
+				Pattern.compile("property float32 z"),
+				Pattern.compile("element face \\d+"),
+				Pattern.compile("property list uint8 int32 vertex_indices"),
+				Pattern.compile("end_header"),
+		};
+		for (int j = 0; j<8; j++) {
+			if (!(headp[j].matcher(tk.lines[j]).matches())) {
+				throw new WrongFileFormatException("Broken header on line "+(j+1));
+			}
+		}
+		
+		Pattern vecp = Pattern.compile("-?(\\d*(\\.\\d*)?) -?(\\d*(\\.\\d*)?) -?(\\d*(\\.\\d*)?) *");
+		Pattern facep = Pattern.compile("(\\d+ )+\\d+ *");
+		int i = 0;
+		int lmode = 0;
+		for (String s : tk.lines) {
+			if (i >= 9) {
+				Boolean matches_vec = vecp.matcher(s).matches();
+				Boolean matches_face = facep.matcher(s).matches();
+				if (lmode == 0 ) {
+					if (matches_vec) {
+						//fine
+					} else if (matches_face) {
+						lmode=1;
+					} else if (!matches_vec) {
+						throw new WrongFileFormatException("PLYMESHREADER: Error on line "+(i+1)+" expecting vector");
+					}
+				} else if (lmode == 1) {
+					if (matches_face) {
+						//fine
+					} else if (matches_vec) {
+						throw new WrongFileFormatException("PLYMR: Error on line "+(1+i)+" found vector in face section");
+					} else if (!matches_face) {
+						throw new WrongFileFormatException("PLYMR: Bad face on line "+(1+i));
+					}
+				}
+			}
+			i++;
+		}
 		tk.skip(8);
 		IntToken num_vertex_t = new IntToken(0);
 		tk.expect(num_vertex_t);
@@ -45,7 +91,7 @@ public class PLYMeshReader implements MeshReader {
 			Token[] xyz_t = {tk.pop(),tk.pop(),tk.pop()};
 
 			double[] xyz = new double[3];
-			for (int i=0; i<3;i++) {
+			for (i=0; i<3;i++) {
 				Token c = xyz_t[i];
 				if (c instanceof IntToken) {
 					xyz[i]=(double) (int) c.getValue();
@@ -67,7 +113,7 @@ public class PLYMeshReader implements MeshReader {
 			tk.expect(num_nodes_t);
 			int n = (int) num_nodes_t.getValue();
 			LinkedHashSet<Vertex> face = new LinkedHashSet<Vertex>();
-			for (int i=0; i < n; i+=1) {
+			for (i=0; i < n; i+=1) {
 				IntToken vert_no_t = new IntToken(0);
 				tk.expect(vert_no_t);
 				int vert_no = (int) vert_no_t.getValue();

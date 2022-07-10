@@ -11,7 +11,6 @@ public class Polygon extends GraphicalObject {
 		this.vertices= new LinkedHashSet<Vertex>();
 		for (Vertex v : vs) {
 			Vertex nv = new Vertex(v.x,v.y,v.z);
-			int ba = this.vertices.size();
 			this.vertices.add(nv);
 		}
 	}
@@ -35,8 +34,7 @@ public class Polygon extends GraphicalObject {
 		if (getClass() != obj.getClass())
 			return false;
 		Polygon other = (Polygon) obj;
-		return this.vertices.equals(other.vertices);
-		/*for (Vertex x : vertices) {
+		for (Vertex x : vertices) {
 			Boolean found = false;
 			for (Vertex y : other.vertices) {
 				if (x.equals(y)) {
@@ -60,8 +58,7 @@ public class Polygon extends GraphicalObject {
 				return false;
 			}
 		}
-		return true;*/
-		//return vertices.equals(other.vertices);
+		return true;
 	}
 
 	@Override

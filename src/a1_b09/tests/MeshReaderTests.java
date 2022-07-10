@@ -20,6 +20,7 @@ class MeshReaderTests {
 			m.readFromFile("./tests/cube.obj");
 			assertEquals(m.polygons.size(),6);
 		} catch (WrongFileFormatException e) {
+			System.out.println(e.msg);
 			fail("Exception encountered");
 		}
 	}
@@ -220,6 +221,31 @@ class MeshReaderTests {
 			fail("Should throw exception");
 		} catch (WrongFileFormatException e) {
 			assertTrue(true);
+		}
+	}
+	//fix small cube to not have duplicate vertices
+	@Test
+	void test_off_smallshape() {
+		Mesh m = new Mesh();
+		m.setReader(new OFFMeshReader());
+		try {
+			m.readFromFile("./tests/smallcube.off");
+			assertEquals(m.polygons.size(),6);
+		} catch (WrongFileFormatException e) {
+			System.out.println(e.msg);
+			fail("shouldnt fail");
+		}
+	}
+	@Test
+	void test_off_color() {
+		Mesh m = new Mesh();
+		m.setReader(new OFFMeshReader());
+		try {
+			m.readFromFile("./tests/redcube.off");
+			assertEquals(m.polygons.size(),6);
+		} catch (WrongFileFormatException e) {
+			System.out.println(e.msg);
+			fail("shouldnt fail");
 		}
 	}
 }

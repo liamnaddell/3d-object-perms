@@ -1,15 +1,17 @@
 package a1_b09;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class Vertex extends GraphicalObject {
 	public double x;
 	public double y;
 	public double z;
+	
+
 	@Override
 	public int hashCode() {
-		//hacky hack hack here
-		return (int) Math.round(x*y*z*10);
+		return Objects.hash(x, y, z);
 	}
 	@Override
 	public boolean equals(Object obj) {
