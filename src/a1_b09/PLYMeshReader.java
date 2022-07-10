@@ -45,8 +45,8 @@ public class PLYMeshReader implements MeshReader {
 			}
 		}
 		
-		Pattern vecp = Pattern.compile("-?(\\d*(\\.\\d*)?) -?(\\d*(\\.\\d*)?) -?(\\d*(\\.\\d*)?) *");
-		Pattern facep = Pattern.compile("(\\d+ )+\\d+ *");
+		Pattern vecp = Pattern.compile(" *-?(\\d*(\\.\\d*)?) *-?(\\d*(\\.\\d*)?) *-?(\\d*(\\.\\d*)?) *");
+		Pattern facep = Pattern.compile(" *(\\d+ *)+\\d+ *");
 		int i = 0;
 		int lmode = 0;
 		for (String s : tk.lines) {
@@ -98,7 +98,7 @@ public class PLYMeshReader implements MeshReader {
 				} else if (c instanceof DoubleToken) {
 					xyz[i]=(double) c.getValue();
 				} else {
-					throw new WrongFileFormatException("Expecting IntToken or DoubleToken on line "+c.line()+", found "+c);
+					//throw new WrongFileFormatException("Expecting IntToken or DoubleToken on line "+c.line()+", found "+c);
 				}
 			}
 			all_vertices.add(new Vertex(xyz[0],xyz[1],xyz[2]));

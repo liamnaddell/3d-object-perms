@@ -4,11 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import a1_b09.Mesh;
-import a1_b09.OBJMeshReader;
-import a1_b09.OFFMeshReader;
-import a1_b09.PLYMeshReader;
-import a1_b09.WrongFileFormatException;
+import a1_b09.*;
 
 class MeshReaderTests {
 
@@ -134,7 +130,7 @@ class MeshReaderTests {
 		Mesh m = new Mesh();
 		m.setReader(new OFFMeshReader());
 		try {
-			m.readFromFile("./tests/face_in_vertex.obj");
+			m.readFromFile("./tests/face_in_vertex.off");
 			fail("Should throw exception");
 		} catch (WrongFileFormatException e) {
 			assertTrue(true);
@@ -208,6 +204,7 @@ class MeshReaderTests {
 			m.readFromFile("./tests/face_in_vertex.ply");
 			fail("Should throw exception");
 		} catch (WrongFileFormatException e) {
+			System.out.println(e.msg);
 			assertTrue(true);
 		}
 	}
@@ -248,4 +245,22 @@ class MeshReaderTests {
 			fail("shouldnt fail");
 		}
 	}
+	@Test
+	void test_cant_access() {
+		String f = "/icantaccess";
+		MeshReader mws[] = {new OBJMeshReader(),new OFFMeshReader(),new PLYMeshReader()};
+		Mesh m = new Mesh();
+		for (MeshReader mw : mws) {
+			m.setReader(mw);
+			//shouldn't fail
+			try {
+				m.readFromFile(f);
+				fail("shoulda failed");
+			} catch (WrongFileFormatException e) {
+				System.out.println(e.msg);
+				assertTrue(true);
+			}
+		}
+	}
+
 }

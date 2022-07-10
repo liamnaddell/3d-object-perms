@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import a1_b09.Vertex;
+import a1_b09.*;
 
 class VertexTest {
 	@Test
@@ -36,5 +36,18 @@ class VertexTest {
 		Vertex b = new Vertex(2.0,2.0,2.0);
 		assertTrue(v.hashCode() == b.hashCode());
 		assertTrue(v.equals(b));
+	}
+	@Test
+	void test_equals4() {
+		Vertex v = new Vertex(2.0,2.0,2.0);
+		Vertex b = null;
+		assertFalse(v.equals(b));
+	}
+	@Test
+	void test_equals5() {
+		Vertex v = new Vertex(2.0,2.0,2.0);
+		StrToken b = new StrToken("");
+		assertFalse(v.hashCode() == b.hashCode());
+		assertFalse(v.equals(b));
 	}
 }

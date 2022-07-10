@@ -3,7 +3,7 @@ package a1_b09;
 //import java.io.IOException;
 //import java.nio.file.Paths;
 
-public class Main {
+/*public class Main {
 
 	public static void main(String[] args) throws Exception {
 		Mesh mesh = new Mesh();
@@ -26,4 +26,4 @@ public class Main {
 		//mesh.setWriter(new OFFMeshWriter());
 		//mesh.writeToFile("./carfromobj.off");
 	}
-}
+}*/

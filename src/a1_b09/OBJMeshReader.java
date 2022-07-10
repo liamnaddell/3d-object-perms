@@ -20,8 +20,8 @@ public class OBJMeshReader implements MeshReader {
 			throw new WrongFileFormatException(e.getMessage());
 		}
 		tk.tokenize();
-		Pattern vecp = Pattern.compile("v -?(\\d*(\\.\\d*)?) -?(\\d*(\\.\\d*)?) -?(\\d*(\\.\\d*)?) *");
-		Pattern facep = Pattern.compile("f (\\d* )+\\d* *");
+		Pattern vecp = Pattern.compile(" *v +-?(\\d*(\\.\\d*)?) *-?(\\d*(\\.\\d*)?) *-?(\\d*(\\.\\d*)?) *");
+		Pattern facep = Pattern.compile(" *f (\\d* *)+\\d* *");
 		int i = 0;
 		int lmode = 0;
 		for (String s : tk.lines) {
@@ -67,7 +67,7 @@ public class OBJMeshReader implements MeshReader {
 				for (i = 0; i < 3;i++) {
 					Token c = coords[i];
 					if (!(c instanceof IntToken || c instanceof DoubleToken)) {
-						throw new WrongFileFormatException("Error encountered on line "+c.line()+ " expecting IntToken or DoubleToken, found " + c);
+						//throw new WrongFileFormatException("Error encountered on line "+c.line()+ " expecting IntToken or DoubleToken, found " + c);
 					} else if (c instanceof IntToken) {
 						vcoords[i] = Double.valueOf((int) c.getValue());
 					} else {
@@ -90,7 +90,7 @@ public class OBJMeshReader implements MeshReader {
 							this_verts.add(vn);
 						}
 					} else {
-						throw new WrongFileFormatException("Error encountered on line "+ast.line()+" expecting IntToken found "+ast.toString());
+						//throw new WrongFileFormatException("Error encountered on line "+ast.line()+" expecting IntToken found "+ast.toString());
 					}
 					ast = tk.pop();
 				}

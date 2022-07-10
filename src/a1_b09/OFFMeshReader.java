@@ -22,7 +22,7 @@ public class OFFMeshReader implements MeshReader {
 		if (!(headp.matcher(header).matches())) {
 			throw new WrongFileFormatException("Broken header");
 		}
-		Pattern vecp = Pattern.compile("-?(\\d*(\\.\\d*)?) -?(\\d*(\\.\\d*)?) -?(\\d*(\\.\\d*)?) *");
+		Pattern vecp = Pattern.compile(" *-?(\\d*(\\.\\d*)?) -?(\\d*(\\.\\d*)?) -?(\\d*(\\.\\d*)?) *");
 		Pattern facep = Pattern.compile("(\\d* )+\\d* *");
 		//skipping through header
 		int i = 0;
@@ -79,9 +79,7 @@ public class OFFMeshReader implements MeshReader {
 					xyz[i]=(double) (int) c.getValue();
 				} else if (c instanceof DoubleToken) {
 					xyz[i]=(double) c.getValue();
-				} else {
-					throw new WrongFileFormatException("OFFMR: Expecting IntToken or DoubleToken on line "+c.line()+", found "+c);
-				}
+				} 
 			}
 			int bsize = all_vertices.size();
 			all_vertices.add(new Vertex(xyz[0],xyz[1],xyz[2]));
@@ -121,9 +119,16 @@ public class OFFMeshReader implements MeshReader {
 			if (maybe_r_or_nl_t instanceof NlToken) {
 				tk.skip(0);
 			} else if (maybe_r_or_nl_t instanceof IntToken) {
-				tk.skip(3);
+				for (i=0; i < 3; i++) {
+					IntToken c_t = new IntToken(0);
+					tk.expect(c_t);
+					int c = (int) c_t.getValue();
+					if (c < 0 || c > 220) {
+						throw new WrongFileFormatException("OFFMR: "+c+" is not a colo(u)r");
+					}
+				}
 			} else {
-				throw new WrongFileFormatException("OFFMR: Error encountered on line "+maybe_r_or_nl_t.line()+", expecting NlToken or IntToken, found "+maybe_r_or_nl_t);
+				//throw new WrongFileFormatException("OFFMR: Error encountered on line "+maybe_r_or_nl_t.line()+", expecting NlToken or IntToken, found "+maybe_r_or_nl_t);
 			}
 			tk.expect(new NlToken());
 			if (tk.is_eof()) mode=2;
