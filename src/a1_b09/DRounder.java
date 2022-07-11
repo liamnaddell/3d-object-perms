@@ -10,8 +10,8 @@ public class DRounder {
 		return Math.rint(d*eps)/eps;
 	}*/
 	public static String round(double d) {
-		double eps = Math.pow(10,6);
-		double rounded=Math.rint(d*eps)/eps;
-		return String.format("%.6f",rounded);
+		//double eps = Math.pow(10,6);
+		//double rounded=Math.rint(d*eps)/eps;
+		return String.format("%.6f",d);
 	}
 }
