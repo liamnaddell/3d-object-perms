@@ -123,7 +123,7 @@ public class OFFMeshReader implements MeshReader {
 					IntToken c_t = new IntToken(0);
 					tk.expect(c_t);
 					int c = (int) c_t.getValue();
-					if (c < 0 || c > 220) {
+					if (c < 0 || c > 255) {
 						throw new WrongFileFormatException("OFFMR: "+c+" is not a colo(u)r");
 					}
 				}
